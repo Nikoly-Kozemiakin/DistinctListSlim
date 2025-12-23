@@ -3,11 +3,11 @@
 A minimalist collection for **ValueTypes** with no allocations for small sets (<50 elements), using `stackalloc` and `ArrayPool`.
 
 ## Features
-- ✅ Zero allocations for sets smaller than 50 elements  
-- ✅ Supports uniqueness (`Distinct`)  
-- ✅ Fast `Contains`, `Add`, `Remove` operations  
-- ✅ Manual resource lifecycle control via `Release()` (required because it is a `ref struct` and cannot rely on GC finalization)  
-- ✅ Switches seamlessly from stack to pooled array when capacity grows  
+- Zero allocations for sets smaller than 50 elements  
+- Supports uniqueness (`Distinct`)  
+- Fast `Contains`, `Add`, `Remove` operations  
+- Manual resource lifecycle control via `Release()` (required because it is a `ref struct` and cannot rely on GC finalization)  
+- Switches seamlessly from stack to pooled array when capacity grows  
 
 ## Example Usage
 
@@ -37,7 +37,7 @@ foreach (var x in slim.AsSpan())
 slim.Release();
 ```
 ## Resource Lifecycle
-Because DistinctListSlim<T> is implemented as a ref struct, it cannot rely on GC finalization.
+Because DistinctListSlim<T> is implemented as a `ref struct`, it cannot rely on GC finalization.
 When the internal buffer grows beyond the stack allocation, it rents an array from ArrayPool<T>.
 To avoid memory leaks, you must call Release() manually when the container is no longer needed.
 
@@ -48,3 +48,14 @@ var slim = new DistinctListSlim<int>(buffer, distinct: true);
 slim.Release(); 
 // return rented array to ArrayPool if allocated
 ```
+
+## Use Cases
+- Temporary unique collections in high‑performance code
+- Avoiding GC pressure in tight loops or latency‑sensitive systems
+- Lightweight replacement for HashSet<T> or List<T> when working with small sets of value types
+- Scenarios where stack allocation is preferable for speed and locality
+
+## License
+This project is licensed under the MIT License
+
+
